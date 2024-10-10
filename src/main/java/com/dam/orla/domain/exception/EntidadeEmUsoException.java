@@ -1,8 +1,8 @@
 package com.dam.orla.domain.exception;
 
-public abstract class EntidadeNaoEncontradaException extends NegocioException {
+public abstract class EntidadeEmUsoException extends NegocioException {
 
-	public EntidadeNaoEncontradaException(String mensagem) {
+	public EntidadeEmUsoException(String mensagem) {
 		super(mensagem);
 	}
 	
