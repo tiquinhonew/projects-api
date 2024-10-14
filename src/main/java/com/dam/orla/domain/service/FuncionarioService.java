@@ -21,7 +21,7 @@ public class FuncionarioService {
 
     public FuncionarioResponse criarFuncionario(final FuncionarioRequest funcionario) {
         final FuncionarioModel funcionarioModel = FuncionarioMapper.dtoToEntity(funcionario);
-        ifPresentThrowException(funcionario);
+        ifPresentThrowException(funcionario.cpf(), funcionario.email());
         final FuncionarioModel novoFuncionario = funcionarioRepository.save(funcionarioModel);
         return FuncionarioMapper.entityToDto(novoFuncionario);
     }
@@ -31,15 +31,10 @@ public class FuncionarioService {
         return FuncionarioMapper.entityToDto(funcionarios);
     }
 
-    private void ifPresentThrowException(final FuncionarioRequest funcionario) {
-        funcionarioRepository.findByCpf(funcionario.cpf())
-            .ifPresent(funcionarioExistente -> {
-                throw new FuncionarioEmUsoException("Já existe um funcionário cadastrado com o CPF informado");
-            });
-        funcionarioRepository.findByEmail(funcionario.email())
-            .ifPresent(funcionarioExistente -> {
-                throw new FuncionarioEmUsoException("Já existe um funcionário cadastrado com o e-mail informado");
-            });
+    private void ifPresentThrowException(final String cpf, final String email) {
+        if (funcionarioRepository.existsByCpfOrEmail(cpf, email)) {
+            throw new FuncionarioEmUsoException("Já existe um funcionário cadastrado com o CPF ou e-mail informado");
+        }
     }
 
 }
